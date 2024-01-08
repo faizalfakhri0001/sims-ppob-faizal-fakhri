@@ -13,27 +13,28 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { AuthStack, MainStack } from './navigations';
+import Color from './config/color';
+import { Provider } from 'react-redux';
+import { store } from './store';
+import Router from './Router';
 
 function App(): React.JSX.Element {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? Color.grey : Color.danger,
   };
 
   return (
-    <SafeAreaView style={[backgroundStyle, styles.container]}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <NavigationContainer>
-        {isLogin ? <MainStack /> : <AuthStack />}
-      </NavigationContainer>
-    </SafeAreaView>
+    <Provider store={store}>
+      <SafeAreaView style={[backgroundStyle, styles.container]}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={backgroundStyle.backgroundColor}
+        />
+        <Router />
+      </SafeAreaView>
+    </Provider>
   );
 }
 

@@ -1,15 +1,30 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import { AuthHeader, Input, Button } from 'components'
 import { Ref as InputRefType } from 'src/components/Input'
 import { Color } from 'config'
 import { AuthScreenProps } from 'types/navigations'
+import { useAppDispatch } from 'src/hooks/redux'
+import { login } from 'store/feature/account/actions'
 
 interface Props extends AuthScreenProps<'Login'> {}
 
 const Login:React.FC<Props> = (props) => {
   const {navigation} = props;
-  const inputRef2 = useRef<InputRefType>(null)
+  const dispatch = useAppDispatch();
+  const inputRef = useRef<InputRefType[]>([]);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  function toggleShowPassword() {
+    setShowPassword(prev => !prev);
+  }
+
+  function handleLogin() {
+    const email = inputRef.current[0].getValue();
+    const password = inputRef.current[1].getValue();
+    dispatch(login({email, password}));
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <AuthHeader />
@@ -17,26 +32,26 @@ const Login:React.FC<Props> = (props) => {
         Masuk atau buat akun untuk memulai
       </Text>
       <View style={styles.inputContainer}>
-        <Input 
+        <Input
+          ref={el => {if (el) {inputRef.current.push(el)}}}
           leftIcon='at'
           returnKeyType='next'
           onSubmitEditing={() => {
-            inputRef2.current?.focus()
+            inputRef.current[1].focus()
           }}
-          placeholder='Massukkan email anda'/>
+          placeholder='massukkan email anda'/>
         <Input 
-          ref={inputRef2}
+          ref={el => {if (el) {inputRef.current.push(el)}}}
           leftIcon='lock-outline'
           rightIcon='eye-outline'
-          secureTextEntry
+          secureTextEntry={!showPassword}
           textContentType='password'
-          onSubmitEditing={() => {
-            console.log('submit')
-          }}
-          placeholder='Masukkan password anda'/>
+          onSubmitEditing={handleLogin}
+          onPressRightIcon={toggleShowPassword}
+          placeholder='masukkan password anda'/>
       </View>
       <View>
-        <Button label='Masuk' />
+        <Button label='Masuk' onPress={handleLogin}/>
         <Text style={styles.registerText}>belum punya akun? registrasi
         <Text style={styles.here} onPress={() => {
           navigation.navigate('Register')

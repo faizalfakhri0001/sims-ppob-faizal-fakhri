@@ -1,36 +1,40 @@
-import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native'
+import { Color } from 'config';
+import React, { useCallback, useImperativeHandle, useRef, useState } from 'react'
+import { StyleSheet, TextInput, TextInputProps, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type Props = {
-  leftIcon?: string,
-  rightIcon?: string,
+  leftIcon?: string;
+  leftIconSize?: number;
+  onPressLeftIcon?: () => void;
+  rightIcon?: string;
+  onPressRightIcon?: () => void;
 } & TextInputProps
 
 export type Ref = {
   focus: () => void
-  showDanger: () => void
+  showDanger: (value: boolean) => void
+  getValue: () => string
+  setValue: (value: string) => void;
 }
 
 const Input = React.forwardRef<Ref, Props>((props, ref) => {
   const inputRef = useRef<TextInput>(null)
-  const [value, setValue] = useState<string>('');
-  const [borderColor, setBorderColor] = useState<string>('lightgrey');
-  const [leftIconColor, setLeftIconColor] = useState<string>('lightgrey');
-  const [rightIconColor, setRightIconColor] = useState<string>('lightgrey');
+  const value = useRef<string>('');
+  const [isEmpty, setIsEmpty] = useState<boolean>(true);
+  const [isDanger, setIsDanger] = useState<boolean>(false);
 
   const onChangeText = useCallback((text: string) => {
     if (props.onChangeText) {
       props.onChangeText(text)
     }
 
-    setValue(text);
+    value.current = text;
     if (text.length > 0) {
-      setLeftIconColor('black')
-      setBorderColor('lightgrey')
+      setIsEmpty(false);
     } else if (text.length === 0) {
-      setLeftIconColor('lightgrey')
-      setBorderColor('lightgrey')
+      setIsDanger(false);
+      setIsEmpty(true);
     }
   }, []);
 
@@ -39,26 +43,35 @@ const Input = React.forwardRef<Ref, Props>((props, ref) => {
       focus() {
         inputRef.current?.focus()
       },
-      showDanger: () => {
-        setBorderColor('orange')
-        setLeftIconColor('orange')
-      }
+      showDanger: (value: boolean) => {
+        setIsDanger(value)
+      },
+      getValue: () => {
+        return value.current;
+      },
+      setValue: (text: string) => {
+        value.current = text;
+        inputRef.current?.setNativeProps({text});
+        setIsEmpty(false)
+      },
     }
-  }, [])
+  }, [setIsDanger])
+
   return (
-    <View style={[styles.container, {borderColor: borderColor}]}>
+    <View style={[styles.container, {borderColor: isDanger ? Color.danger : Color.grey}]}>
       {typeof props.leftIcon === 'string' ?
-        <Icon name={props.leftIcon} size={20} color={leftIconColor} /> : null
+        <Icon name={props.leftIcon} size={props.leftIconSize ?? 20} color={isDanger ? Color.danger : isEmpty ? Color.grey : Color.black} /> : null
       }
       <TextInput
         {...props}
         ref={inputRef}
-        value={value}
         onChangeText={onChangeText}
+        placeholderTextColor={Color.grey}
         style={[props.style, styles.input]}
+        autoCorrect={false}
       />
       {typeof props.rightIcon === 'string' ?
-        <Icon name={props.rightIcon} size={20} color={rightIconColor} /> : null
+        <Icon name={props.rightIcon} size={20} onPress={props.onPressRightIcon} color={Color.grey} /> : null
       }
     </View>
   )

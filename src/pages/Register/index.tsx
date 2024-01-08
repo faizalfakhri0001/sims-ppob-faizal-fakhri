@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     marginTop: 28,
     fontSize: 13,
     textAlign: 'center',
+    color: Color.black,
   },
   here: {
     fontWeight: '700',

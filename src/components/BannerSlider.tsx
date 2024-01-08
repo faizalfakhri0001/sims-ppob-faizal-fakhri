@@ -16,7 +16,7 @@ const BannerSlider = (props: Props) => {
         <ScrollView horizontal contentContainerStyle={styles.scrollContainer}>
           {props.data.length > 0 ? props.data.map((data, index) => {
             return <Image key={index} borderRadius={12} source={{uri: data.banner_image}} style={styles.banner} />
-          }) : <Text>banner tidak ditemukan</Text>}
+          }) : <Text style={{color: 'black'}}>banner tidak ditemukan</Text>}
         </ScrollView>
       </View>
     )

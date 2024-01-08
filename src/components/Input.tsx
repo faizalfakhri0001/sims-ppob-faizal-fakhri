@@ -90,5 +90,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     marginHorizontal: 4,
+    color: Color.black,
   }
 })

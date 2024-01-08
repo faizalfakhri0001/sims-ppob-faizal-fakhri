@@ -1,6 +1,6 @@
 import { Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import React from 'react'
-import { MenuData } from 'config'
+import { Color, MenuData } from 'config'
 import { Service } from 'types/entites'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 10,
     fontWeight: '500',
+    color: Color.black,
   },
   menuIcon: {
     width: 50,

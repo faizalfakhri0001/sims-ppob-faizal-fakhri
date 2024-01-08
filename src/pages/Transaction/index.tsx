@@ -63,7 +63,7 @@ const Transaction: React.FC<Props> = (props) => {
                 <Text allowFontScaling={false} style={styles.showmoreText}>Show more</Text>
               </TouchableOpacity>
             }
-            ListEmptyComponent={<Text>Maaf tidal ada history transaksi saat ini</Text>}
+            ListEmptyComponent={<Text style={{color: Color.grey}}>Maaf tidak ada history transaksi saat ini</Text>}
             renderItem={renderItem}
           />
         </View>
